@@ -1,6 +1,27 @@
+//using new form given by browser for form submission||FormData constructor
+
 export default function Signup() {
+  //
+  //submit
+  function handleSubmit(event) {
+    event.preventDefault();
+
+    const fd = new FormData(event.target); //whatever i wanna extract must give that name prop
+    //  const enteredEmail = fd.get("email");
+    // const enteredPassword = fd.get("password");
+    //but this can be a drag // using Object-alsoGivenByBrowser and formEntries()
+    const data = Object.fromEntries(fd.entries()); //this gives us an array of all the input fields and their values
+    //this data wll jsut give us an obj where we have key value pairs
+
+    //one NOTE MULTIVALUE INPUT FIELDS VALUES ARE LOST LIKE IN accustion
+    const acquisitionChannel = fd.getAll("acquisition");
+    data.acquisition = acquisitionChannel;
+    console.log(data);
+  }
+
+  //
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <h2>Welcome on board!</h2>
       <p>We just need a little bit of data from you to get you started 🚀</p>
 

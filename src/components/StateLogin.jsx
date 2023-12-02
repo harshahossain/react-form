@@ -1,3 +1,5 @@
+//validating input on keystroke
+
 import { useState } from "react";
 
 export default function Login() {
@@ -11,6 +13,11 @@ export default function Login() {
   });
   function handleSubmit(evt) {
     evt.preventDefault();
+
+    setEnteredValues({
+      email: "",
+      password: "",
+    });
   }
 
   //handleChanges

@@ -1,10 +1,12 @@
 //login via refs //really convinient when i dont have to manage a lot of inputs
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 export default function Login() {
   //
   const email = useRef();
   const password = useRef();
+  //
+  const [emailIsInvalid, setEmailIsInvalid] = useState(false);
   //
   function handleSubmit(evt) {
     evt.preventDefault();
@@ -14,17 +16,28 @@ export default function Login() {
 
     //email.current.value = ""; not recommend ref for handle dom
     //password.current.value = "";
-    evt.target.reset();
+    //evt.target.reset();
+
+    const emailIsValid = enteredEmail.includes("@");
+    if (!emailIsValid) {
+      setEmailIsInvalid(true);
+      return;
+    }
+    setEmailIsInvalid(false);
+    console.log("Sending HTTP request");
   }
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2>Login</h2>
+      <h2>Ref Login</h2>
 
       <div className="control-row">
         <div className="control no-margin">
           <label htmlFor="email">Email</label>
           <input id="email" type="email" name="email" ref={email} />
+          <div className="control-error">
+            {emailIsInvalid && <p>Please enter a valid email address.</p>}
+          </div>
         </div>
 
         <div className="control no-margin">

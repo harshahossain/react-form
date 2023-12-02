@@ -1,7 +1,10 @@
 //using new form given by browser for form submission||FormData constructor
+import { useState } from "react";
 
 export default function Signup() {
   //
+  const [passwordsAreNotEqual, setPasswordsAreNotEqual] = useState(false);
+
   //submit
   function handleSubmit(event) {
     event.preventDefault();
@@ -16,7 +19,16 @@ export default function Signup() {
     //one NOTE MULTIVALUE INPUT FIELDS VALUES ARE LOST LIKE IN accustion
     const acquisitionChannel = fd.getAll("acquisition");
     data.acquisition = acquisitionChannel;
-    console.log(data);
+
+    //checkig pw
+    if (data.password !== data["confirm-password"]) {
+      //because of the dash[]syntax
+      setPasswordsAreNotEqual(true);
+      return; //returning here so latter codes doesnt get executed
+    }
+
+    //sending data to http
+    console.log("sending data to http", data);
 
     // reseting form
     //event.target.reset();
@@ -53,6 +65,9 @@ export default function Signup() {
             name="confirm-password"
             required
           />
+          <div className="control-error">
+            {passwordsAreNotEqual && <p>Password did not match!</p>}
+          </div>
         </div>
       </div>
 

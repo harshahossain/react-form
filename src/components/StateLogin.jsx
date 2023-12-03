@@ -5,64 +5,38 @@ import Input from "./Input";
 
 //
 import { isEmail, isNotEmpty, hasMinLength } from "../util/validation";
+import { useInput } from "../hooks/useInput";
 //
 export default function StateLogin() {
-  // //
-  // const [enteredEmail, setEnteredEmail] = useState("");
-  // const [enteredPassword, setEnteredPassword] = useState("");
   //
-  const [enteredValues, setEnteredValues] = useState({
-    email: "",
-    password: "",
+  const {
+    value: emailValue,
+    handleInputChange: handleEmailChange,
+    handleInputBlur: handleEmailBlur,
+    hasError: emailHasError,
+  } = useInput("", (value) => {
+    //
+    return isEmail(value) && isNotEmpty(value);
   });
 
-  const [didEdit, setDidEdit] = useState({
-    email: false,
-    password: false,
-  });
-  //validating
-  const emailIsInvalid =
-    didEdit.email &&
-    !isEmail(enteredValues.email) &&
-    !isNotEmpty(enteredValues.email);
-  const passwordIsInvalid =
-    didEdit.password &&
-    !isNotEmpty(enteredValues.password) &&
-    !hasMinLength(enteredValues.password, 6);
-  function handleInputBlur(identifier) {
-    setDidEdit((prevEdit) => ({
-      ...prevEdit,
-      [identifier]: true,
-    }));
-  }
-
+  const {
+    value: passwordValue,
+    handleInputChange: handlePasswordChange,
+    handleInputBlur: handlePasswordBlur,
+    hasError: passwordHasError,
+  } = useInput("", (value) => hasMinLength(value, 6));
   //
+
   function handleSubmit(evt) {
     evt.preventDefault();
 
-    setEnteredValues({
-      email: "",
-      password: "",
-    });
+    if (emailHasError || passwordHasError) {
+      return;
+    }
+    //sending to http
+    console.log(emailValue, passwordValue);
   }
 
-  //handleChanges
-  // function handleEmailChange(evt) {
-  //   setEnteredEmail(evt.target.value);
-  // }
-  // function handlePasswordChange(evt) {
-  //   setEnteredPassword(evt.target.value);
-  // }
-  function handleInputChange(identifier, evt) {
-    setEnteredValues((prevState) => ({
-      ...prevState,
-      [identifier]: evt.target.value,
-    })); //must do ({})
-    setDidEdit((prevEdit) => ({
-      ...prevEdit,
-      [identifier]: false,
-    }));
-  }
   return (
     <form onSubmit={handleSubmit}>
       <h2>State Login</h2>
@@ -72,10 +46,10 @@ export default function StateLogin() {
           id="email"
           type="email"
           name="email"
-          onChange={(evt) => handleInputChange("email", evt)}
-          value={enteredValues.email}
-          onBlur={() => handleInputBlur("email")}
-          error={emailIsInvalid && "Please enter a valid email."}
+          onChange={handleEmailChange}
+          value={emailValue}
+          onBlur={handleEmailBlur}
+          error={emailHasError && "Please enter a valid email."}
         />
         <div className="control no-margin">
           <Input
@@ -83,11 +57,11 @@ export default function StateLogin() {
             id="password"
             type="password"
             name="password"
-            onChange={(evt) => handleInputChange("password", evt)}
-            value={enteredValues.password}
-            onBlur={() => handleInputBlur("password")}
+            onChange={handlePasswordChange}
+            value={passwordValue}
+            onBlur={handlePasswordBlur}
             error={
-              passwordIsInvalid && "password must be at least 6 charecters."
+              passwordHasError && "password must be at least 6 charecters."
             }
           />
         </div>
